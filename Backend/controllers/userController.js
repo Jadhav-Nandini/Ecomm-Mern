@@ -40,6 +40,8 @@ const createUser = async (req, res) => {
   }
 };
 
+
+
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -69,6 +71,8 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 });
 
+
+
 const logoutUser = asyncHandler(async (req, res) => {
   res.cookie("jwt", "", {
     httpOnly: true,
@@ -78,4 +82,38 @@ const logoutUser = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Logout Successfully" });
 });
 
-export { createUser, loginUser, logoutUser };
+
+const getAllUsers = asyncHandler(async(req,res) => {
+  const users = await User.find({})
+  res.json(users)
+  console.log(users);
+  
+});
+
+
+const getUserProfile = asyncHandler(async(req, res) => {
+  const user = await User.findById(req.user._id)
+
+  if(user) {
+    res.json({
+      _id: user._id,
+      username: user.username,
+      email: user.email
+    })
+  }else{
+    res.status(400).json({
+         message: "User not found",
+      error: error.message,
+    })
+    
+    
+    
+  }
+})
+
+
+
+
+
+
+export { createUser, loginUser, logoutUser, getAllUsers, getUserProfile };
