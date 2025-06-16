@@ -4,10 +4,11 @@ import {
     getAllUsers, 
     getUserProfile, 
     loginUser, 
-    logoutUser
+    logoutUser,
+    updateUserProfile
 
 } from "../controllers/userController.js";
-import auth from "../middlewares/auth.js";
+import { authenticate, authorizeAdmin } from "../middlewares/auth.js";
 
 
 const router = express.Router();
@@ -15,7 +16,7 @@ const router = express.Router();
 router
 .route("/")
 .post(createUser)
-.get(getAllUsers);
+.get(authenticate, authorizeAdmin, getAllUsers);
 
 
 router.post("/login", loginUser);
@@ -23,7 +24,10 @@ router.post("/logout", logoutUser);
 
 router
 .route("/userProfile")
-.get(auth, getUserProfile );
+.get(authenticate, getUserProfile)
+.put(authenticate, updateUserProfile);
+
+
 
 
 export default router;

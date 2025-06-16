@@ -18,7 +18,6 @@ app.use(cookieParser());
 app.use("/api/users",userRoutes);
 
 
-
 // app.get("/", (req, res) => {
 //   res.send("<h1>  Its running </h1> ");
 // });
