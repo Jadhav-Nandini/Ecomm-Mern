@@ -4,7 +4,10 @@ import {createUser, loginUser, logoutUser} from "../controllers/userController.j
 
 const router = express.Router();
 
-router.post("/register", createUser);
+router
+.route("/")
+.post(createUser);
+
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 

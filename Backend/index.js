@@ -16,8 +16,8 @@ app.use("/api/users",userRoutes);
 
 
 
-app.get("/", (req, res) => {
-  res.send("<h1>  Its running </h1> ");
-});
+// app.get("/", (req, res) => {
+//   res.send("<h1>  Its running </h1> ");
+// });
 
 app.listen(Port, () => console.log(`Server is running on ${Port}`));
