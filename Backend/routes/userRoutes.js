@@ -9,6 +9,7 @@ import {
 
 } from "../controllers/userController.js";
 import { authenticate, authorizeAdmin } from "../middlewares/auth.js";
+import { deleteUser, getUserdetail } from "../controllers/adminController.js";
 
 
 const router = express.Router();
@@ -24,8 +25,14 @@ router.post("/logout", logoutUser);
 
 router
 .route("/userProfile")
-.get(authenticate, getUserProfile)
-.put(authenticate, updateUserProfile);
+.get(authenticate, getUserProfile) // get user profile
+.put(authenticate, updateUserProfile); // upadate user profile
+
+router
+.route("/:id")
+.delete(authenticate, authorizeAdmin, deleteUser)
+.get(authenticate, authorizeAdmin, getUserdetail);
+
 
 
 
