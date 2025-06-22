@@ -9,7 +9,7 @@ import {
 
 } from "../controllers/userController.js";
 import { authenticate, authorizeAdmin } from "../middlewares/auth.js";
-import { deleteUser, getUserdetail } from "../controllers/adminController.js";
+import { deleteUser, getUserdetail, updateUserbyadmin } from "../controllers/adminController.js";
 
 
 const router = express.Router();
@@ -31,7 +31,11 @@ router
 router
 .route("/:id")
 .delete(authenticate, authorizeAdmin, deleteUser)
-.get(authenticate, authorizeAdmin, getUserdetail);
+.get(authenticate, authorizeAdmin, getUserdetail)
+.put(authenticate, authorizeAdmin, updateUserbyadmin);
+
+
+
 
 
 
