@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js"
-import paymentRoute from "./routes/paymentRoute.js"
+import categoryRoute from "./routes/categoryRoute.js"
+// import paymentRoute from "./routes/paymentRoute.js"
 import cookieParser from "cookie-parser";
 
 
@@ -17,7 +18,8 @@ app.use(express.json()); // req.body ko read karne ke liye
 app.use(cookieParser());
 
 app.use("/api/users",userRoutes);
-app.use("/api/payment", paymentRoute)
+app.use("/api/category", categoryRoute)
+// app.use("/api/payment", paymentRoute)
 
 
 
