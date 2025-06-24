@@ -4,9 +4,6 @@ import User from "../models/user.js";
 
 const deleteUser = asyncHandler(async(req,res) => {
     const user = await User.findById(req.params.id) // this id comes from url
-    console.log("Fetched User:", user);
-console.log("Is Admin:", user.isAdmin);
-
 
     if(user) {
         if(user.isAdmin) {
