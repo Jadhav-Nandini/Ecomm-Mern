@@ -25,4 +25,26 @@ const createProduct = asyncHandler(async(req, res) => {
     
 });
 
-export { createProduct }
+const updateProduct = asyncHandler(async(req,res) => {
+    const { name, description, price, quantity, category } = req.body;
+    
+    const product = await Product.findById(req.params.id);
+
+    if(!product) {
+        res.status(404);
+        throw new Error("Product not found")
+    }
+
+    product.name = name || product.name;
+    product.description = description || product.description;
+    product.price = price || product.price;
+    product.quantity = quantity || product.quantity;
+    product.category = category || product.category;
+
+    const updatedproduct = await product.save();
+    res.json(updatedproduct);
+    
+})
+
+
+export { createProduct, updateProduct }
