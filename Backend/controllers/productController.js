@@ -26,9 +26,22 @@ const createProduct = asyncHandler(async(req, res) => {
 });
 
 const getAllProduct = asyncHandler(async(req,res) =>{
-    const products = await Product.findOne().populate("category", "name");
+    const products = await Product.find().populate("category", "name");
     res.status(200).json(products);
+});
+
+const getProductById = asyncHandler(async(req, res) =>{
+    const product = await Product.findById(req.params.id).populate("category", "name");
+
+    if(!product) {
+        res.status(404);
+        throw new Error("Product not found")
+    }
+
+    res.status(200).json(product)
+
 })
+
 
 const updateProduct = asyncHandler(async(req,res) => {
     const { name, description, price, quantity, category } = req.body;
@@ -49,7 +62,7 @@ const updateProduct = asyncHandler(async(req,res) => {
     const updatedproduct = await product.save();
     res.json(updatedproduct);
     
-})
+});
 
 
-export { createProduct, getAllProduct, updateProduct }
+export { createProduct, getAllProduct, getProductById, updateProduct }

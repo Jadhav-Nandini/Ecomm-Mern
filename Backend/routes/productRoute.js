@@ -1,6 +1,6 @@
 import express from "express";
 import { authenticate, authorizeAdmin } from "../middlewares/auth.js";
-import { createProduct, getAllProduct, updateProduct, } from "../controllers/productController.js";
+import { createProduct, getAllProduct, getProductById, updateProduct, } from "../controllers/productController.js";
 
 const router = express.Router();
 
@@ -11,6 +11,7 @@ router
 
 router
 .route("/:id")
+.get(getProductById)
 .put( authenticate, authorizeAdmin , updateProduct)
 
 export default router;
