@@ -4,6 +4,7 @@ dotenv.config();
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js"
 import categoryRoute from "./routes/categoryRoute.js"
+import productRoute from "./routes/productRoute.js"
 // import paymentRoute from "./routes/paymentRoute.js"
 import cookieParser from "cookie-parser";
 
@@ -19,6 +20,7 @@ app.use(cookieParser());
 
 app.use("/api/users",userRoutes);
 app.use("/api/category", categoryRoute)
+app.use("/api/product",productRoute)
 // app.use("/api/payment", paymentRoute)
 
 
