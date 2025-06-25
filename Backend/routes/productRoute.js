@@ -1,12 +1,13 @@
 import express from "express";
 import { authenticate, authorizeAdmin } from "../middlewares/auth.js";
-import { createProduct, updateProduct } from "../controllers/productController.js";
+import { createProduct, getAllProduct, updateProduct, } from "../controllers/productController.js";
 
 const router = express.Router();
 
 router
 .route("/")
-.post(authenticate, authorizeAdmin, createProduct);
+.post(authenticate, authorizeAdmin, createProduct)
+.get(getAllProduct)
 
 router
 .route("/:id")

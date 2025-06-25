@@ -25,6 +25,11 @@ const createProduct = asyncHandler(async(req, res) => {
     
 });
 
+const getAllProduct = asyncHandler(async(req,res) =>{
+    const products = await Product.findOne().populate("category", "name");
+    res.status(200).json(products);
+})
+
 const updateProduct = asyncHandler(async(req,res) => {
     const { name, description, price, quantity, category } = req.body;
     
@@ -47,4 +52,4 @@ const updateProduct = asyncHandler(async(req,res) => {
 })
 
 
-export { createProduct, updateProduct }
+export { createProduct, getAllProduct, updateProduct }
