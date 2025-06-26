@@ -37,6 +37,23 @@ const getCart = asyncHandler(async(req, res) => {
         throw new Error("Cart not found");
     }
     res.json(cart);
-})
+});
 
-export { addToCart, getCart }
+const removeItemFromCart = asyncHandler(async(req, res) => {
+    const { productId } = req.body;
+    const cart = await Cart.findOne({ user: req.user._id });
+
+    if(!cart) {
+        res.status(404);
+        throw new Error("cart not found")
+    }
+
+    cart.cartItems = cart.cartItems.filter(
+        item => item.product.toString() != productId
+    );
+
+    await cart.save();
+    res.json(cart);
+});
+
+export { addToCart, getCart, removeItemFromCart }
