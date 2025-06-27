@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js"
 import categoryRoute from "./routes/categoryRoute.js"
 import productRoute from "./routes/productRoute.js"
 import cartRoute from "./routes/cartRoute.js"
+import orderRoute from "./routes/orderRoute.js"
 // import paymentRoute from "./routes/paymentRoute.js"
 import cookieParser from "cookie-parser";
 
@@ -23,6 +24,7 @@ app.use("/api/users",userRoutes);
 app.use("/api/category", categoryRoute);
 app.use("/api/product",productRoute);
 app.use("/api/cart", cartRoute);
+app.use("/api/order", orderRoute)
 // app.use("/api/payment", paymentRoute)
 
 
