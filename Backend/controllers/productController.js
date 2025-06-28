@@ -3,7 +3,7 @@ import Product from "../models/product.js";
 
 const createProduct = asyncHandler(async(req, res) => {
     console.log(req.body);
-    const { name, description, price, quantity, ratings, category } = req.body;
+    const { name, description, price, quantity, category, image } = req.body;
     
 
     if(!name || !description || !price || !category) {
@@ -17,6 +17,7 @@ const createProduct = asyncHandler(async(req, res) => {
         price,
         quantity,
         category,
+        image,
         createdBy: req.user._id,
     });
 
@@ -43,7 +44,7 @@ const getProductById = asyncHandler(async(req, res) =>{
 });
 
 const updateProduct = asyncHandler(async(req,res) => {
-    const { name, description, price, quantity, category } = req.body;
+    const { name, description, price, quantity, category, image } = req.body;
     
     const product = await Product.findById(req.params.id);
 
@@ -57,6 +58,7 @@ const updateProduct = asyncHandler(async(req,res) => {
     product.price = price || product.price;
     product.quantity = quantity || product.quantity;
     product.category = category || product.category;
+    product.image = image || product.image;
 
     const updatedproduct = await product.save();
     res.json(updatedproduct);

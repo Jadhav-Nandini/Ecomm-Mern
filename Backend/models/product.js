@@ -18,13 +18,16 @@ const productScheme = mongoose.Schema({
         type: Number,
         default: 1,
     },
+    image: {
+        type: String,
+    },
     ratings: {
         type: Number,
         default: 0,
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Category",
+        ref: "Category", //to track which admin created it
         required: true,
     },
     createdBy: {
