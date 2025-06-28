@@ -21,4 +21,9 @@ const createOrder = asyncHandler(async(req, res) => {
     
 });
 
-export { createOrder };
+const getMyOrders = asyncHandler(async(req, res) => {
+    const orders = await Order.find({user: req.user._id}).populate("user", "username email")
+    res.status(200).json(orders)
+})
+
+export { createOrder, getMyOrders };
