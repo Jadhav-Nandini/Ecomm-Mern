@@ -27,6 +27,8 @@ const createProduct = asyncHandler(async(req, res) => {
         createdBy: req.user._id,
     });
 
+    
+
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
     
@@ -64,7 +66,11 @@ const updateProduct = asyncHandler(async(req,res) => {
     product.price = price || product.price;
     product.quantity = quantity || product.quantity;
     product.category = category || product.category;
-
+    
+    if(req.file) {
+      console.log("FILE RECEIVED:", req.file);  // 👈 Check this in terminal
+    }
+    
     if(req.file && req.file.path) {
         product.image = req.file.path;
     }
