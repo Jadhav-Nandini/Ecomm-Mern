@@ -13,7 +13,7 @@ router
 router
 .route("/:id")
 .get(getProductById)
-.put( authenticate, authorizeAdmin, updateProduct)
+.put( authenticate, authorizeAdmin, upload.single("image"), updateProduct)
 .delete(authenticate, authorizeAdmin, deleteProduct)
 
 export default router;

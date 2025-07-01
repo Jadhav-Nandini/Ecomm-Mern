@@ -50,7 +50,7 @@ const getProductById = asyncHandler(async(req, res) =>{
 });
 
 const updateProduct = asyncHandler(async(req,res) => {
-    const { name, description, price, quantity, category, image } = req.body;
+    const { name, description, price, quantity, category } = req.body;
     
     const product = await Product.findById(req.params.id);
 
@@ -64,7 +64,11 @@ const updateProduct = asyncHandler(async(req,res) => {
     product.price = price || product.price;
     product.quantity = quantity || product.quantity;
     product.category = category || product.category;
-    product.image = image || product.image;
+
+    if(req.file && req.file.path) {
+        product.image = req.file.path;
+    }
+
 
     const updatedproduct = await product.save();
     res.json(updatedproduct);
