@@ -1,12 +1,13 @@
 import express from "express";
 import { authenticate, authorizeAdmin } from "../middlewares/auth.js";
 import { createProduct, deleteProduct, getAllProduct, getProductById, updateProduct, } from "../controllers/productController.js";
+import upload from "../utils/multer.js";
 
 const router = express.Router();
 
 router
 .route("/")
-.post(authenticate, authorizeAdmin, createProduct)
+.post(authenticate, authorizeAdmin, upload.single("image"),createProduct)
 .get(getAllProduct);
 
 router

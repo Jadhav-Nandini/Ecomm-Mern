@@ -3,7 +3,7 @@ import Product from "../models/product.js";
 
 const createProduct = asyncHandler(async(req, res) => {
     console.log(req.body);
-    const { name, description, price, quantity, category, image } = req.body;
+    const { name, description, price, quantity, category } = req.body;
     
 
     if(!name || !description || !price || !category) {
@@ -11,13 +11,19 @@ const createProduct = asyncHandler(async(req, res) => {
         throw new Error("All Fields are required");
     }
 
+    if(!req.file || !req.file.path) {
+        res.status(400);
+        throw new Error("Product image is required")
+    }
+    
+
     const product = new Product({
         name,
         description,
         price,
         quantity,
         category,
-        image,
+        image: req.file.path, //cloudinary url from multer
         createdBy: req.user._id,
     });
 
