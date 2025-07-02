@@ -1,5 +1,6 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/product.js";
+import cloudinary from "../config/cloudinary.js"
 
 const createProduct = asyncHandler(async(req, res) => {
     console.log(req.body);
@@ -88,7 +89,13 @@ const deleteProduct = asyncHandler(async(req,res) => {
         res.status(404);
         throw new Error("Product not found");
     }
-    await Product.deleteOne();
+
+    const imageUrl = product.image;
+    const publicId = imageUrl.split("/").pop().split(".")[0];
+    await cloudinary.uploader.destroy(`ecomm-products/${publicId}`)
+
+    
+    await Product.deleteOne({_id: product._id});
     res.status(200).json({message: "Product deleted successfully"});
 
 });
