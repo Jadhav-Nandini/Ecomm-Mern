@@ -1,58 +1,71 @@
-// app/page.tsx
-"use client";
 
-import { useEffect, useState } from "react";
-import axios from "./utils/axios";
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
+'use client';'use client';
 
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from './context/AuthContext';
+import axios from './utils/axios';
+import Hero from './components/Hero';
+import ProductCard from './components/ProductCard';
+import { motion } from 'framer-motion';
 
-type Product = {
+type ProductType = {
   _id: string;
   name: string;
   description: string;
   price: number;
-  quantity: number;
   image: string;
-  category: string;
 };
 
-
-export default function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
-
-  const fetchProducts = async () => {
-    try {
-      const { data } = await axios.get("/product");
-      setProducts(data);
-    } catch (err) {
-      console.error("Failed to fetch products", err);
-    }
-  };
+export default function HomePage() {
+  const { user } = useContext(AuthContext)!;
+  const [products, setProducts] = useState<ProductType[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axios.get('/product', {
+          withCredentials: true,
+        });
+        setProducts(data);
+      } catch (err) {
+        console.error("Failed to fetch products", err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchProducts();
   }, []);
 
   return (
-    <>
-    <Navbar />
-    <Hero/>
-    </>
+    <motion.div
+      className="min-h-screen p-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
+      <Hero />
 
+      <section className="mt-10">
+        <motion.h2
+          className="text-3xl md:text-4xl font-bold text-center text-[#d4af37] tracking-wider mb-10"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          {user?.isAdmin ? 'Manage Inventory' : 'Explore Our Premium Collection'}
+        </motion.h2>
+
+        {loading ? (
+          <p className="text-center text-gray-500 text-lg">Loading products...</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {products.map((product) => (
+              <ProductCard key={product._id} product={product} isAdmin={user?.isAdmin} />
+            ))}
+          </div>
+        )}
+      </section>
+    </motion.div>
   );
 }
-
-    // <main className="p-6">
-    //   <h1 className="text-3xl font-bold mb-4">Welcome to Precious Jewelry</h1>
-    //   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    //     {products.map((product) => (
-    //       <div key={product._id} className="border rounded p-4">
-    //         <img src={product.image} alt={product.name} className="h-40 w-full object-cover rounded mb-2" />
-    //         <h2 className="text-xl font-semibold">{product.name}</h2>
-    //         <p className="text-sm text-gray-600">{product.description}</p>
-    //         <p className="font-bold mt-2">₹{product.price}</p>
-    //       </div>
-    //     ))}
-    //   </div>
-    // </main>
