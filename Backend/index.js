@@ -37,8 +37,10 @@ app.use("/api/cart", cartRoute);
 app.use("/api/order", orderRoute)
 app.use("/api/payment", paymentRoute)
 
-
-
+// ✅ Default route
+app.get("/", (req, res) => {
+  res.send("Jewella API is live 🚀");
+});
 
 app.listen(Port, () => console.log(`Server is running on ${Port}`));
 
