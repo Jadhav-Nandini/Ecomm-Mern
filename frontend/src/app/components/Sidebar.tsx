@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Navbar() {
+export default function Sidebar() {
   const auth = useContext(AuthContext);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -33,7 +33,7 @@ export default function Navbar() {
       <div className="h-5 top-0 left-0 w-full flex justify-between items-center px-6 py-8 z-50 bg-[#f3e6d1] border-white/10">
         <h2 className="text-4xl font-bold text-[#d4af37] tracking-wider font-heading">Jewella</h2>
         <button
-          className="text-gray-900 dark:text-white hover:scale-110 transition"
+          className="text-[#968327] hover:scale-110 transition"
           onClick={() => setIsOpen(true)}
         >
           <Menu size={28} />
@@ -44,7 +44,7 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
             onClick={() => setIsOpen(false)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -61,29 +61,29 @@ export default function Navbar() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.4 }}
-            className="fixed top-0 right-0 h-full w-64 bg-[#c9a57ff1] backdrop-blur-xl border-l border-white/10 p-6 z-50"
+            className="fixed top-0 right-0 h-full w-[50%]   bg-transparent backdrop-blur-md ring-1 ring-amber-300/20  p-6 z-50"
           >
             <button
-              className="absolute top-4 right-4 text-gray-900 hover:scale-110 transition"
+              className="absolute top-4 right-4 text-[#ead295] hover:scale-110 transition"
               onClick={() => setIsOpen(false)}
             >
-              <X size={24} />
+              <X size={30} />
             </button>
 
-            <nav className="flex flex-col gap-4 text-gray-800 font-medium mt-12">
+            <nav className="flex flex-col  gap-4 text-[#dfdbd0f6] font-regular mt-12 cursor-pointer  text-2xl">
               <Link
                 href="/"
-                className="flex items-center gap-2 hover:text-[#d4af37]"
+                className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border-[#5b4e29] p-2 rounded-2xl transform transition"
                 onClick={() => setIsOpen(false)}
               >
-                <Layers size={18} /> Home
+                <Layers size={26} /> Home
               </Link>
               <Link
                 href="/products"
-                className="flex items-center gap-2 hover:text-[#d4af37]"
+                className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border[#5b4e29] p-2 rounded-2xl transform transition"
                 onClick={() => setIsOpen(false)}
               >
-                <Layers size={18} /> Products
+                <Layers size={26} /> Products
               </Link>
 
               {auth?.user?.isAdmin && (
@@ -112,17 +112,17 @@ export default function Navbar() {
                 <>
                   <Link
                     href="/login"
-                    className="flex items-center gap-2 hover:text-[#d4af37]"
+                    className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border[#5b4e29] p-2 rounded-2xl transform transition"
                     onClick={() => setIsOpen(false)}
                   >
-                    <LogIn size={18} /> Login
+                    <LogIn size={26} /> Login
                   </Link>
                   <Link
                     href="/register"
-                    className="flex items-center gap-2 hover:text-[#d4af37]"
+                    className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border[#5b4e29] p-2 rounded-2xl transform transition"
                     onClick={() => setIsOpen(false)}
                   >
-                    <User size={18} /> Signup
+                    <User size={26} /> Signup
                   </Link>
                 </>
               )}

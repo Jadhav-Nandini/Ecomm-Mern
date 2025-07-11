@@ -11,7 +11,7 @@ export default function Hero() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
     >
-      <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#d4af37] drop-shadow mb-4 tracking-wide">
+      <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#d4af37] drop-shadow mb-4 tracking-wide ">
         Discover Timeless Elegance
       </h1>
       <p className="text-gray-700 text-lg sm:text-xl max-w-xl mx-auto">

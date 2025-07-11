@@ -44,7 +44,7 @@ export default function HomePage() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
     >
-      <Hero />
+      <Hero/>
 
       <section className="mt-10">
         <motion.h2
