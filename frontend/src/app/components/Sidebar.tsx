@@ -61,7 +61,7 @@ export default function Sidebar() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.4 }}
-            className="fixed top-0 right-0 h-full w-[50%]   bg-transparent backdrop-blur-md ring-1 ring-amber-300/20  p-6 z-50"
+            className="fixed top-0 right-0 h-full w-[100%] sm:w-[50%] md:w-[30%]   bg-transparent backdrop-blur-md ring-1 ring-amber-300/20  p-6 z-50"
           >
             <button
               className="absolute top-4 right-4 text-[#ead295] hover:scale-110 transition"
@@ -71,19 +71,27 @@ export default function Sidebar() {
             </button>
 
             <nav className="flex flex-col  gap-4 text-[#dfdbd0f6] font-regular mt-12 cursor-pointer  text-2xl">
+
+                {auth?.user ? (<>
+                 <p className="mt-6 text-[#7b5b26e2] text-3xl font-heading ">
+                    Hello, {auth.user.username}
+                  </p>
+              </>):(<></>)}
+              
               <Link
                 href="/"
                 className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border-[#5b4e29] p-2 rounded-2xl transform transition"
                 onClick={() => setIsOpen(false)}
               >
-                <Layers size={26} /> Home
+                <Layers size={24} /> Home
               </Link>
+
               <Link
                 href="/products"
                 className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border[#5b4e29] p-2 rounded-2xl transform transition"
                 onClick={() => setIsOpen(false)}
               >
-                <Layers size={26} /> Products
+                <Layers size={24} /> Products
               </Link>
 
               {auth?.user?.isAdmin && (
@@ -92,20 +100,18 @@ export default function Sidebar() {
                   className="flex items-center gap-2 hover:text-[#d4af37]"
                   onClick={() => setIsOpen(false)}
                 >
-                  <LayoutDashboard size={18} /> Admin Dashboard
+                  <LayoutDashboard size={24} /> Admin Dashboard
                 </Link>
               )}
 
+          
               {auth?.user ? (
                 <>
-                  <p className="text-sm mt-6 text-gray-600">
-                    Hello, {auth.user.username}
-                  </p>
                   <button
                     onClick={logout}
-                    className="flex items-center gap-2 text-red-600 mt-2 hover:text-red-800"
+                    className="flex items-center gap-2 text-[#efd47e] hover:border-b hover:border[#5b4e29] p-2 rounded-2xl transform transition "
                   >
-                    <LogOut size={18} /> Logout
+                    <LogOut size={24} /> Logout
                   </button>
                 </>
               ) : (
@@ -115,14 +121,14 @@ export default function Sidebar() {
                     className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border[#5b4e29] p-2 rounded-2xl transform transition"
                     onClick={() => setIsOpen(false)}
                   >
-                    <LogIn size={26} /> Login
+                    <LogIn size={24} /> Login
                   </Link>
                   <Link
                     href="/register"
                     className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border[#5b4e29] p-2 rounded-2xl transform transition"
                     onClick={() => setIsOpen(false)}
                   >
-                    <User size={26} /> Signup
+                    <User size={24} /> Signup
                   </Link>
                 </>
               )}

@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 // create user
 const createUser = async (req, res) => {
   const { username, email, password } = req.body;
+  
 
   if (!username || !email || !password) {
     return res.status(400).json({ message: "Please fill all the inputs" });
@@ -38,6 +39,8 @@ const createUser = async (req, res) => {
       error: error.message,
     });
   }
+  console.log(newUser);
+  
 };
 
 
