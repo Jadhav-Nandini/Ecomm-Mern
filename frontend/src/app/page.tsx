@@ -48,7 +48,7 @@ export default function HomePage() {
 
       <section className="mt-10">
         <motion.h2
-          className="text-3xl md:text-4xl font-bold text-center text-[#d4af37] tracking-wider mb-10"
+          className="text-3xl md:text-4xl font-bold text-center text-[#d4af37] tracking-wider mb-10 cursor-context-menu"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}

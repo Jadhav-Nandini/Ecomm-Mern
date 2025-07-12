@@ -10,7 +10,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AuthProvider>
           <Sidebar />
-          <main className="p-20 min-h-screen bg-[#f3e6d1] backdrop-blur-lg">
+          <main className=" min-h-screen bg-[#f3e6d1] backdrop-blur-lg">
             {children}
           </main>
         </AuthProvider>

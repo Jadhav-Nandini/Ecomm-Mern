@@ -31,7 +31,7 @@ export default function Sidebar() {
     <>
       {/* Topbar */}
       <div className="h-5 top-0 left-0 w-full flex justify-between items-center px-6 py-8 z-50 bg-[#f3e6d1] border-white/10">
-        <h2 className="text-4xl font-bold text-[#d4af37] tracking-wider font-heading">Jewella</h2>
+        <h2 className="text-4xl font-bold text-[#d4af37] tracking-wider brand logo">Jewella</h2>
         <button
           className="text-[#968327] hover:scale-110 transition"
           onClick={() => setIsOpen(true)}
