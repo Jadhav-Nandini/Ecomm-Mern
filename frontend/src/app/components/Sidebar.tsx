@@ -97,7 +97,7 @@ export default function Sidebar() {
               {auth?.user?.isAdmin && (
                 <Link
                   href="/admin/dashboard"
-                  className="flex items-center gap-2 hover:text-[#d4af37]"
+                  className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border[#5b4e29] p-2 rounded-2xl transform transition"
                   onClick={() => setIsOpen(false)}
                 >
                   <LayoutDashboard size={24} /> Admin Dashboard
@@ -116,13 +116,6 @@ export default function Sidebar() {
                 </>
               ) : (
                 <>
-                  <Link
-                    href="/login"
-                    className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border[#5b4e29] p-2 rounded-2xl transform transition"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <LogIn size={24} /> Login
-                  </Link>
                   <Link
                     href="/register"
                     className="flex items-center gap-2 hover:text-[#554b2b] hover:border-b hover:border[#5b4e29] p-2 rounded-2xl transform transition"
