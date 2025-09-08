@@ -1,5 +1,4 @@
 
-
 import './globals.css';
 import { AuthProvider } from './context/AuthContext';
 import Sidebar from './components/Sidebar';
@@ -7,10 +6,10 @@ import Sidebar from './components/Sidebar';
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-[var(--color-bg-dark)] text-[var(--color-text-light)]">
         <AuthProvider>
           <Sidebar />
-          <main className=" min-h-screen bg-[#f3e6d1] backdrop-blur-lg">
+          <main className="min-h-screen backdrop-blur-lg">
             {children}
           </main>
         </AuthProvider>

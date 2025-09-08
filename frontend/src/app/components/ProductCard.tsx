@@ -1,34 +1,59 @@
 
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
-export default function ProductCard({ product, isAdmin }: any) {
+type Props = {
+  product: {
+    _id: string;
+    name: string;
+    description: string;
+    price: number;
+    image: string;
+    category?: {_id: string; name: string} | string;
+  };
+};
+
+export default function ProductCard({ product }: Props) {
   return (
-    <motion.div
-      className="rounded-xl bg-white/40 backdrop-blur-md p-4 shadow-lg hover:shadow-2xl transition-all duration-300"
-      whileHover={{ scale: 1.05 }}
+    <motion.article
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.25 }}
+      className="group rounded-2xl overflow-hidden bg-white/10 border border-white/20 backdrop-blur-lg shadow-xl"
     >
-      <img
-        src={product.image}
-        alt={product.name}
-        className="h-48 w-full object-cover rounded-lg mb-4"
-      />
-      <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
-      <p className="text-sm text-gray-600">{product.description}</p>
-      <p className="text-xl font-bold text-[#d4af37] mt-2">₹{product.price}</p>
+      {/* Media */}
+      <div className="relative">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+        {product.category && (
+          <span className="absolute top-4 left-4 text-xs px-3 py-1 rounded-full bg-amber-400 text-black shadow">
+           {typeof product.category === "object"
+      ? product.category.name
+      : product.category}
+          </span>
+        )}
+      </div>
 
-      {isAdmin && (
-        <div className="flex gap-2 mt-3">
-          <button className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition">
-            Edit
-          </button>
-          <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-            Delete
+      {/* Content */}
+      <div className="p-5">
+        <h3 className="text-lg font-semibold text-white line-clamp-1">
+          {product.name}
+        </h3>
+        <p className="text-sm text-gray-300 mt-1 line-clamp-2">
+          {product.description}
+        </p>
+
+        <div className="mt-4 flex items-center justify-between">
+          <p className="text-xl font-bold text-amber-300">₹{product.price}</p>
+          <button className="px-4 py-2 rounded-full bg-amber-400 text-black font-medium hover:bg-amber-300 transition">
+            View Details
           </button>
         </div>
-      )}
-    </motion.div>
+      </div>
+    </motion.article>
   );
 }
-

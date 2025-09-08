@@ -1,95 +1,181 @@
-'use client';
 
-import { useEffect, useState } from 'react';
-import axios from '../utils/axios';
-import ProductCard from '../components/ProductCard';
-import { motion } from 'framer-motion';
+"use client";
 
-type ProductType = {
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import ProductCard from "../components/ProductCard";
+import axios from "../utils/axios";
+
+type Product = {
   _id: string;
   name: string;
   description: string;
   price: number;
   image: string;
-  category: string;
+  category?: string;
 };
 
-export default function ProductsPage() {
-  const [products, setProducts] = useState<ProductType[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [searchTerm, setSearchTerm] = useState('');
+export default function Products() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
 
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState<string>("All");
+
+  // Fetch products
   useEffect(() => {
-    const fetchProducts = async () => {
+    let mounted = true;
+    (async () => {
       try {
-        const { data } = await axios.get('/product', { withCredentials: true });
-        setProducts(data);
-        setFilteredProducts(data);
-
-        // Get unique categories
-        const uniqueCategories = ['All', ...new Set(data.map((item: ProductType) => item.category))];
-        setCategories(uniqueCategories);
-      } catch (err) {
-        console.error('Failed to fetch products', err);
+        setLoading(true);
+        const { data } = await axios.get("/product", { withCredentials: true });
+        if (!mounted) return;
+        setProducts(Array.isArray(data) ? data : []);
+      } catch (e: any) {
+        setErr("Failed to load products.");
+        console.error(e);
+      } finally {
+        setLoading(false);
       }
+    })();
+    return () => {
+      mounted = false;
     };
-
-    fetchProducts();
   }, []);
 
-  useEffect(() => {
-    let filtered = products;
+  // Derive unique categories
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    products.forEach((p) => p.category && set.add(p.category));
+    return ["All", ...Array.from(set)];
+  }, [products]);
 
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter((p) => p.category === selectedCategory);
+  // Filtered list
+  const filtered = useMemo(() => {
+    let list = [...products];
+
+    if (category !== "All") {
+      list = list.filter((p) => (p.category || "").toLowerCase() === category.toLowerCase());
     }
 
-    if (searchTerm.trim() !== '') {
-      filtered = filtered.filter((p) =>
-        p.category.toLowerCase().includes(searchTerm.toLowerCase())
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          (p.category || "").toLowerCase().includes(q) ||
+          (p.description || "").toLowerCase().includes(q)
       );
     }
-
-    setFilteredProducts(filtered);
-  }, [searchTerm, selectedCategory, products]);
+    return list;
+  }, [products, category, search]);
 
   return (
-    <motion.div
-      className="min-h-screen px-6 py-10"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+    <section
+      id="collection"
+      className="min-h-screen w-full bg-gradient-to-br from-[#0a192f] via-[#0c2337] to-[#0d1f51] px-5 sm:px-8 lg:px-14 py-14"
     >
       {/* Header */}
-      <h1 className="text-3xl md:text-4xl font-heading font-bold text-center text-[#d4af37] mb-8">
-        Browse All Products
-      </h1>
+      <motion.div
+        initial={{ opacity: 0, y: -18 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-7xl mx-auto"
+      >
+        <h1 className="text-center text-3xl sm:text-4xl font-bold text-amber-300">
+          Our Exclusive Collection
+        </h1>
+        <p className="text-center text-gray-300 mt-2">
+          Handcrafted designs in gold & diamonds — curated for every occasion.
+        </p>
+      </motion.div>
 
-      {/* Search Bar */}
-      <div className="max-w-2xl mx-auto mb-6">
-        <input
-          type="text"
-          placeholder="Search by category..."
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      {/* Controls */}
+      <div className="max-w-7xl mx-auto mt-8 grid grid-cols-1 lg:grid-cols-4 gap-4">
+        {/* Search */}
+        <div className="lg:col-span-3">
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name, category, or keyword..."
+            className="w-full rounded-full bg-white/10 border border-white/20 text-white placeholder:text-gray-400 px-5 py-3 outline-none focus:ring-2 focus:ring-amber-400"
+          />
+        </div>
+
+        {/* Category Select (mobile-friendly) */}
+        <div>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full rounded-full bg-white/10 border border-white/20 text-white px-4 py-3 outline-none focus:ring-2 focus:ring-amber-400"
+          >
+            {categories.map((c) => (
+              <option key={c} value={c} className="bg-[#0c2337]">
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {/* Category Buttons */}
-    
+      {/* Category Pills (desktop) */}
+      <div className="max-w-7xl mx-auto mt-4 hidden md:flex flex-wrap gap-3">
+        {categories.map((c) => {
+          const active = c === category;
+          return (
+            <button
+              key={c}
+              onClick={() => setCategory(c)}
+              className={[
+                "px-4 py-2 rounded-full text-sm transition border",
+                active
+                  ? "bg-amber-400 text-black border-amber-300"
+                  : "bg-white/10 text-white border-white/20 hover:bg-white/15",
+              ].join(" ")}
+            >
+              {c}
+            </button>
+          );
+        })}
+      </div>
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-        {filteredProducts.length === 0 ? (
-          <p className="text-center text-gray-500 col-span-full">No products found.</p>
+      {/* Grid */}
+      <div className="max-w-7xl mx-auto mt-10">
+        {loading ? (
+          <SkeletonGrid />
+        ) : err ? (
+          <p className="text-center text-red-300">{err}</p>
+        ) : filtered.length === 0 ? (
+          <p className="text-center text-gray-300">No products found.</p>
         ) : (
-          filteredProducts.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+            {filtered.map((p) => (
+              <ProductCard key={p._id} product={p} />
+            ))}
+          </div>
         )}
       </div>
-    </motion.div>
+    </section>
+  );
+}
+
+function SkeletonGrid() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div
+          key={i}
+          className="rounded-2xl overflow-hidden bg-white/10 border border-white/20"
+        >
+          <div className="h-56 w-full bg-white/10 animate-pulse" />
+          <div className="p-5 space-y-3">
+            <div className="h-5 w-3/4 bg-white/10 animate-pulse rounded" />
+            <div className="h-4 w-1/2 bg-white/10 animate-pulse rounded" />
+            <div className="h-6 w-1/3 bg-white/10 animate-pulse rounded" />
+            <div className="h-10 w-full bg-white/10 animate-pulse rounded-full" />
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

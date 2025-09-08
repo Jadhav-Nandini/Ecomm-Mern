@@ -101,12 +101,12 @@ const getUserProfile = asyncHandler(async(req, res) => {
     res.json({
       _id: user._id,
       username: user.username,
-      email: user.email
+      email: user.email,
+      isAdmin: user.isAdmin,
     })
   }else{
     res.status(400).json({
-         message: "User not found",
-      error: error.message,
+         message: "User not found"
     })
     
     

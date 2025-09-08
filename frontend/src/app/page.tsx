@@ -14,6 +14,7 @@ type ProductType = {
   description: string;
   price: number;
   image: string;
+  isAdmin: boolean;
 };
 
 export default function HomePage() {
@@ -39,7 +40,7 @@ export default function HomePage() {
 
   return (
     <motion.div
-      className="min-h-screen p-6"
+      className="min-h-screen "
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
