@@ -12,7 +12,7 @@ type Product = {
   description: string;
   price: number;
   image: string;
-  category?: string;
+  category?: string | { _id: string; name: string };
 };
 
 export default function Products() {
@@ -31,7 +31,19 @@ export default function Products() {
         setLoading(true);
         const { data } = await axios.get("/product", { withCredentials: true });
         if (!mounted) return;
-        setProducts(Array.isArray(data) ? data : []);
+
+        // ✅ Normalize category into a string always
+        const normalized = Array.isArray(data)
+          ? data.map((p) => ({
+              ...p,
+              category:
+                typeof p.category === "object" && p.category !== null
+                  ? p.category.name
+                  : p.category,
+            }))
+          : [];
+
+        setProducts(normalized);
       } catch (e: any) {
         setErr("Failed to load products.");
         console.error(e);
@@ -56,7 +68,10 @@ export default function Products() {
     let list = [...products];
 
     if (category !== "All") {
-      list = list.filter((p) => (p.category || "").toLowerCase() === category.toLowerCase());
+      list = list.filter(
+        (p) =>
+          (p.category || "").toLowerCase() === category.toLowerCase()
+      );
     }
 
     if (search.trim()) {
@@ -74,7 +89,7 @@ export default function Products() {
   return (
     <section
       id="collection"
-      className="min-h-screen w-full bg-gradient-to-br from-[#0a192f] via-[#0c2337] to-[#0d1f51] px-5 sm:px-8 lg:px-14 py-14"
+      className="min-h-screen w-full bg-gradient-to-t from-black/70 via-transparent to-black/40 z-0 px-5 sm:px-8 lg:px-14 py-14"
     >
       {/* Header */}
       <motion.div
@@ -82,7 +97,7 @@ export default function Products() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-7xl mx-auto"
       >
-        <h1 className="text-center text-3xl sm:text-4xl font-bold text-amber-300">
+        <h1 className="text-center text-3xl sm:text-4xl font-bold text-amber-300 cursor-context-menu">
           Our Exclusive Collection
         </h1>
         <p className="text-center text-gray-300 mt-2">
@@ -98,11 +113,11 @@ export default function Products() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, category, or keyword..."
-            className="w-full rounded-full bg-white/10 border border-white/20 text-white placeholder:text-gray-400 px-5 py-3 outline-none focus:ring-2 focus:ring-amber-400"
+            className="w-full rounded-full bg-white/5 border border-white/20 text-white placeholder:text-gray-400 px-5 py-3 outline-none focus:ring-2 focus:ring-amber-400"
           />
         </div>
 
-        {/* Category Select (mobile-friendly) */}
+        {/* Category Select */}
         <div>
           <select
             value={category}
@@ -110,7 +125,7 @@ export default function Products() {
             className="w-full rounded-full bg-white/10 border border-white/20 text-white px-4 py-3 outline-none focus:ring-2 focus:ring-amber-400"
           >
             {categories.map((c) => (
-              <option key={c} value={c} className="bg-[#0c2337]">
+              <option key={c} value={c} className="bg-[#282500]">
                 {c}
               </option>
             ))}
@@ -118,7 +133,7 @@ export default function Products() {
         </div>
       </div>
 
-      {/* Category Pills (desktop) */}
+      {/* Category Pills */}
       <div className="max-w-7xl mx-auto mt-4 hidden md:flex flex-wrap gap-3">
         {categories.map((c) => {
           const active = c === category;
@@ -130,7 +145,7 @@ export default function Products() {
                 "px-4 py-2 rounded-full text-sm transition border",
                 active
                   ? "bg-amber-400 text-black border-amber-300"
-                  : "bg-white/10 text-white border-white/20 hover:bg-white/15",
+                  : "bg-white/5 text-white border-white/20 hover:bg-white/15",
               ].join(" ")}
             >
               {c}
@@ -144,7 +159,7 @@ export default function Products() {
         {loading ? (
           <SkeletonGrid />
         ) : err ? (
-          <p className="text-center text-red-300">{err}</p>
+          <p className="text-center text-amber-400">{err}</p>
         ) : filtered.length === 0 ? (
           <p className="text-center text-gray-300">No products found.</p>
         ) : (
