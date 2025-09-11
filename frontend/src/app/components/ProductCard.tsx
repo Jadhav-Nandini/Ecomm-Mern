@@ -2,6 +2,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link"; // 👈 import add karo
+
 
 type Props = {
   product: {
@@ -30,7 +32,7 @@ export default function ProductCard({ product }: Props) {
           loading="lazy"
         />
         {product.category && (
-          <span className="absolute top-4 left-4 text-xs px-3 py-1 rounded-full bg-amber-400 text-black shadow">
+          <span className="absolute top-4 left-4 text-xs px-3 py-1 rounded-full bg-amber-100 text-black shadow">
            {typeof product.category === "object"
       ? product.category.name
       : product.category}
@@ -48,10 +50,13 @@ export default function ProductCard({ product }: Props) {
         </p>
 
         <div className="mt-4 flex items-center justify-between">
-          <p className="text-xl font-bold text-amber-300">₹{product.price}</p>
-          <button className="px-4 py-2 rounded-full bg-amber-400 text-black font-medium hover:bg-amber-300 transition">
+          <p className="text-xl font-bold text-[#e6e1c8]">₹{product.price}</p>
+          <Link
+            href={`/products/${product._id}`} // dynamic route
+
+          className="px-4 py-2 rounded-full bg-amber-300 text-black font-medium hover:bg-amber-300 transition">
             View Details
-          </button>
+          </Link>
         </div>
       </div>
     </motion.article>
