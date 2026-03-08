@@ -1,47 +1,51 @@
-import express from "express";
+//Crash Handlers 
+process.on("uncaughtException", err => {
+  console.error("UNCAUGHT EXCEPTION", err);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", err => {
+  console.error("UNHANDLED PROMISE", err);
+  process.exit(1);
+});
+
 import dotenv from "dotenv";
 dotenv.config();
+
+import express from "express";
 import cors from "cors"
-import connectDB from "./config/db.js";
-import userRoutes from "./routes/userRoutes.js"
-import categoryRoute from "./routes/categoryRoute.js"
-import productRoute from "./routes/productRoute.js"
-import cartRoute from "./routes/cartRoute.js"
-import orderRoute from "./routes/orderRoute.js"
-import paymentRoute from "./routes/paymentRoute.js"
 import cookieParser from "cookie-parser";
 
+import connectDB from "./config/db.js";
+import routes from "./routes/index.js"
+import startCronJobs from "./helpers/cron.js";
 
 const app = express();
-
-
 const Port = process.env.PORT || 4000;
-connectDB();
 
-const allowedOrigin ="http://localhost:3000";
+await connectDB();
 
-app.use(express.json()); // req.body ko read karne ke liye
+app.use(express.json());
 app.use(cookieParser());
 
+const allowedOrigin = "http://localhost:3000";
 
 app.use(cors({
   origin: allowedOrigin, // frontend origin
-  credentials: true               // allow cookies/auth header
+  credentials: true    // allow cookies/auth header
 }));
 
+app.use("/api", routes)
 
-app.use("/api/users",userRoutes);
-app.use("/api/category", categoryRoute);
-app.use("/api/product",productRoute);
-app.use("/api/cart", cartRoute);
-app.use("/api/order", orderRoute)
-app.use("/api/payment", paymentRoute)
-
-// ✅ Default route
+//  Default route
 app.get("/", (req, res) => {
-  res.send("Jewella API is live 🚀");
+  res.send("Jewella API is live /");
 });
 
-app.listen(Port, () => console.log(`Server is running on ${Port}`));
+app.listen(Port, () => {
+  console.log(`Server is running on ${Port}`);
+  startCronJobs();
+
+});
 
 

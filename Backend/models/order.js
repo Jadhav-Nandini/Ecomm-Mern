@@ -33,15 +33,17 @@ const orderSchema = mongoose.Schema({
   },
 
   paymentStatus: {
-    type:String,
-    default: "Not Paid",
+    type: String,
+    enum: ["Pending", "Paid", "Failed", "Refunded"],
+    default: "Pending"
   },
 
-  deliveryStatus: {
+  orderStatus: {
     type: String,
-    default: "Pending",
+    enum: ["Placed", "Cancelled", "Shipped", "Delivered"],
+    default: "Placed"
   },
-  
+
 }, { timestamps: true });
 
 const Order = mongoose.model("Order", orderSchema);
