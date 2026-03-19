@@ -1,47 +1,42 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import User from "../models/user.js";
 import createToken from "../utils/createToken.js";
-import bcrypt from "bcryptjs";
+import * as  userService from "../services/userService.js";
 
 // create user
-const createUser = async (req, res) => {
-  const { username, email, password } = req.body;
-  
+// const createUser = asyncHandler(async (req, res) => {
+//   const { username, email, password } = req.body;
+//   const userExits = await User.findOne({ email });
 
-  if (!username || !email || !password) {
-    return res.status(400).json({ message: "Please fill all the inputs" });
-  }
+//   if (userExits) {
+//     res.status(400)
+//     throw new Error("User already exists")
+//   }
+//   const user = await User.create({
+//     username,
+//     email,
+//     password,
+//   })
 
-  const userExits = await User.findOne({ email });
-  if (userExits) {
-    return res.status(400).send("User Already Exists");
-  } 
+//   createToken(res, user._id);
 
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
+//   res.status(201).json({
+//     _id: user._id,
+//     username: user.username,
+//     email: user.email,
+//     isAdmin: user.isAdmin,
+//   });
+// })
 
-  const newUser = new User({ username, email, password: hashedPassword });
 
-  try {
-    await newUser.save();
-    createToken(res, newUser._id);
+const createUser = asyncHandler(async (req, res) => {
+  const user = await userService.createUser(req.body);
 
-    res.status(201).json({
-      _id: newUser._id,
-      username: newUser.username,
-      email: newUser.email,
-      isAdmin: newUser.isAdmin,
-    });
-  } catch (error) {
-    console.error("register error", error.message);
-    res.status(400).json({
-      message: "Invalid user data",
-      error: error.message,
-    });
-  }
-  console.log(newUser);
-  
-};
+  createToken(res, user._id);
+
+  res.status(201).json(user);
+});
+
 
 
 
@@ -52,21 +47,21 @@ const loginUser = asyncHandler(async (req, res) => {
   const existingUser = await User.findOne({ email });
 
   if (!existingUser) {
-    return res.status(401).json({ message: "user not found" });
+    res.status(401)
+    throw new Error("User not found")
   }
 
   // checks if the password is valid or not
-
-  const isValidPassword = await bcrypt.compare(password, existingUser.password);
-
+  const isValidPassword = await existingUser.matchPassword(password)
   if (!isValidPassword) {
-    return res.status(401).json({ message: "Invalid Password" });
+    res.status(401)
+    throw new Error("Invalid Password")
   }
 
   //generate token and send response
   createToken(res, existingUser._id);
 
-  res.status(201).json({
+  res.status(200).json({
     _id: existingUser._id,
     username: existingUser.username,
     email: existingUser.email,
@@ -74,77 +69,63 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 });
 
-
-
 const logoutUser = asyncHandler(async (req, res) => {
   res.cookie("jwt", "", {
     httpOnly: true,
     expires: new Date(0),
   });
 
-  res.status(200).json({ message: "Logout Successfully" });
+  res.status(200)
+  throw new Error("Logout Successfully")
 });
 
-
-const getAllUsers = asyncHandler(async(req,res) => {
-  const users = await User.find({})
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}).select("-password")
   res.json(users)
   console.log(users);
-  
+
 });
 
-
-const getUserProfile = asyncHandler(async(req, res) => {
+const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id)
 
-  if(user) {
+  if (user) {
     res.json({
       _id: user._id,
       username: user.username,
       email: user.email,
       isAdmin: user.isAdmin,
     })
-  }else{
-    res.status(400).json({
-         message: "User not found"
-    })
-    
-    
-    
+  } else {
+    res.status(400)
+    throw new Error("User not found")
   }
 })
 
-const updateUserProfile = asyncHandler(async(req, res) => {
+const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
-  if(user){
+  if (user) {
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
-  
-  if(req.body.password) {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-    user.password = hashedPassword;
-  }
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
 
-  const updatedUser = await user.save();
-  res.json({
-    _id: updatedUser._id,
-    username: updatedUser.username,
-    email: updatedUser.email,
-    isAdmin: updatedUser.isAdmin
-  });
+    const updatedUser = await user.save();
+    res.json({
+      _id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin
+    });
 
-  }else {
-    res.status(404).json({
-      message: "User not found"
-    })
+  } else {
+    res.status(404)
+    throw new Error("User not found")
   }
 
 })
-
-
-
 
 export { createUser, loginUser, logoutUser, getAllUsers, getUserProfile, updateUserProfile };
