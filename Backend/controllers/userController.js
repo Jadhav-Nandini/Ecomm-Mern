@@ -1,73 +1,36 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import User from "../models/user.js";
 import createToken from "../utils/createToken.js";
-import * as  userService from "../services/userService.js";
-
-// create user
-// const createUser = asyncHandler(async (req, res) => {
-//   const { username, email, password } = req.body;
-//   const userExits = await User.findOne({ email });
-
-//   if (userExits) {
-//     res.status(400)
-//     throw new Error("User already exists")
-//   }
-//   const user = await User.create({
-//     username,
-//     email,
-//     password,
-//   })
-
-//   createToken(res, user._id);
-
-//   res.status(201).json({
-//     _id: user._id,
-//     username: user.username,
-//     email: user.email,
-//     isAdmin: user.isAdmin,
-//   });
-// })
-
+import {createUserService, loginUserService} from "../services/userService.js";
 
 const createUser = asyncHandler(async (req, res) => {
-  const user = await userService.createUser(req.body);
+  const user = await createUserService(req.body);
 
   createToken(res, user._id);
 
-  res.status(201).json(user);
-});
-
-
-
-
-const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-
-  //checks if the user exists or not
-  const existingUser = await User.findOne({ email });
-
-  if (!existingUser) {
-    res.status(401)
-    throw new Error("User not found")
-  }
-
-  // checks if the password is valid or not
-  const isValidPassword = await existingUser.matchPassword(password)
-  if (!isValidPassword) {
-    res.status(401)
-    throw new Error("Invalid Password")
-  }
-
-  //generate token and send response
-  createToken(res, existingUser._id);
-
-  res.status(200).json({
-    _id: existingUser._id,
-    username: existingUser.username,
-    email: existingUser.email,
-    isAdmin: existingUser.isAdmin,
+  res.status(201).json({
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    isAdmin: user.isAdmin,
   });
 });
+
+const loginUser = asyncHandler(async (req, res) => {
+  const user = await loginUserService(req.body);
+
+  // generate token
+  createToken(res, user._id);
+
+  // send safe response
+  res.status(200).json({
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    isAdmin: user.isAdmin,
+  });
+});
+
 
 const logoutUser = asyncHandler(async (req, res) => {
   res.cookie("jwt", "", {

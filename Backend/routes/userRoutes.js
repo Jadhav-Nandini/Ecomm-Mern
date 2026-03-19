@@ -15,14 +15,21 @@ import { registerValidation, loginValidation } from "../validation/userValidatio
 
 const router = express.Router();
 
+router.get(
+  "/",
+  authenticate,
+  authorizeAdmin,
+  getAllUsers
+);
+
 router
-    .route("/")
     .post(
+        "/register",
         registerValidation,
         validate,
         createUser
     )
-    .get(authenticate, authorizeAdmin, getAllUsers);
+    // .get(authenticate, authorizeAdmin, getAllUsers);
 
 router.post(
     "/login",

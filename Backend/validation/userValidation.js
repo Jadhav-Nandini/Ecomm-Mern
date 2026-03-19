@@ -2,25 +2,28 @@ import { body } from "express-validator";
 
 export const registerValidation = [
   body("username")
-    .notEmpty()
-    .withMessage("Username is required"),
+    .trim()
+    .notEmpty().withMessage("Username is required")
+    .isLength({ min: 3, max: 30 }).withMessage("Username must be 3-30 characters")
+    .escape(),
 
   body("email")
-    .isEmail()
-    .withMessage("Valid email is required"),
+    .trim()
+    .normalizeEmail()
+    .isEmail().withMessage("Valid email is required"),
 
   body("password")
-    .isLength({ min: 6 })
-    .withMessage("Password must be at least 6 characters"),
+    .trim()
+    .isLength({ min: 6 }).withMessage("Password must be at least 6 characters")
+    .matches(/[A-Z]/).withMessage("Password must contain at least one uppercase letter")
 ];
-
 
 export const loginValidation = [
   body("email")
-    .isEmail()
-    .withMessage("Valid email required"),
+    .trim()
+    .normalizeEmail()
+    .isEmail().withMessage("Valid email required"),
 
   body("password")
-    .notEmpty()
-    .withMessage("Password required"),
+    .notEmpty().withMessage("Password required"),
 ];
